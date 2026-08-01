@@ -16,10 +16,12 @@ app.use(express.json());
 app.use(cookieParser());
 // CORS handled by API Gateway
 
-const redis = new Redis({
-  host: process.env.REDIS_HOST || '127.0.0.1',
-  port: parseInt(process.env.REDIS_PORT || '6379'),
-});
+const redis = process.env.REDIS_URL 
+  ? new Redis(process.env.REDIS_URL) 
+  : new Redis({
+      host: process.env.REDIS_HOST || '127.0.0.1',
+      port: parseInt(process.env.REDIS_PORT || '6379'),
+    });
 
 const ACCESS_SECRET = process.env.ACCESS_SECRET || 'supersecret_access_key';
 const ACCESS_TOKEN_EXPIRATION = '15m';
