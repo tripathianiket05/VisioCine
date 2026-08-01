@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.1/files/geist-sans-latin-400-normal.woff2') format('woff2');
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.1/files/geist-sans-latin-600-normal.woff2') format('woff2');
+    font-weight: 600;
+  }
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.1/files/geist-sans-latin-700-normal.woff2') format('woff2');
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.1/files/geist-sans-latin-800-normal.woff2') format('woff2');
+    font-weight: 800;
+  }
+  
+  body {
+    background-color: theme('colors.surface');
+    color: theme('colors.on-surface');
+    font-family: 'Geist', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    background-color: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glow-crimson {
+    box-shadow: 0 0 20px rgba(225, 29, 72, 0.3);
+  }
+  
+  .glow-crimson-hover:hover {
+    box-shadow: 0 0 30px rgba(225, 29, 72, 0.5);
+  }
+
+  /* Keep other variants used in the pages */
+  .crimson-glow {
+    box-shadow: 0 0 20px rgba(225, 29, 72, 0.3);
+  }
+
+  .crimson-glow-strong:hover {
+    box-shadow: 0 0 30px rgba(225, 29, 72, 0.6);
+  }
+
+  /* Hide scrollbar for clean horizontal scrolling */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  @keyframes shimmer {
+      100% { transform: translateX(100%); }
+  }
+}
