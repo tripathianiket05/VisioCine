@@ -1,0 +1,16 @@
+{
+  "name": "visiocine-backend",
+  "version": "1.0.0",
+  "description": "Monorepo root for VisioCine backend microservices",
+  "scripts": {
+    "install:all": "npm install --prefix api-gateway && npm install --prefix auth-service && npm install --prefix catalog-service && npm install --prefix booking-service && npm install --prefix payment-service && npm install --prefix search-service",
+    "prisma:generate": "npx prisma generate --schema=auth-service/prisma/schema.prisma && npx prisma generate --schema=catalog-service/prisma/schema.prisma && npx prisma generate --schema=booking-service/prisma/schema.prisma",
+    "prisma:push": "npx prisma db push --schema=auth-service/prisma/schema.prisma && npx prisma db push --schema=catalog-service/prisma/schema.prisma && npx prisma db push --schema=booking-service/prisma/schema.prisma",
+    "build": "npm run install:all && npm run prisma:generate",
+    "start": "concurrently \"npm start --prefix api-gateway\" \"npm start --prefix auth-service\" \"npm start --prefix catalog-service\" \"npm start --prefix booking-service\" \"npm start --prefix payment-service\" \"npm start --prefix search-service\"",
+    "start:consumers": "concurrently \"npm run start:consumer --prefix booking-service\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,27 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Booking {
+  id          String   @id @default(uuid())
+  userId      String
+  showtimeId  String
+  seatIds     Json
+  status      String   @default("PENDING") // PENDING, CONFIRMED, FAILED
+  totalAmount Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model OutboxEvent {
+  id        String   @id @default(uuid())
+  eventType String
+  payload   Json
+  status    String   @default("PENDING") // PENDING, PROCESSED
+  createdAt DateTime @default(now())
+}

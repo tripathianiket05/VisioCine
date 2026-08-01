@@ -1,0 +1,46 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Movie {
+  id          String     @id @default(uuid())
+  title       String
+  genre       String
+  posterUrl   String?    @db.Text
+  backdropUrl String?    @db.Text
+  overview    String?    @db.Text
+  trailerUrl  String?    @db.Text
+  cast        Json?
+  rating      Float?
+  duration    Int?
+  releaseYear Int?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Showtimes   Showtime[]
+}
+
+model Theatre {
+  id        String     @id @default(uuid())
+  name      String
+  lat       Float
+  lon       Float
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Showtimes Showtime[]
+}
+
+model Showtime {
+  id         String   @id @default(uuid())
+  movieId    String
+  theatreId  String
+  startTime  DateTime
+  movie      Movie    @relation(fields: [movieId], references: [id])
+  theatre    Theatre  @relation(fields: [theatreId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
