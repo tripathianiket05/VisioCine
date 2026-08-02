@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BottomNav from '../components/BottomNav';
 import MovieCard from '../components/MovieCard';
-import apiClient, { getAccessToken } from '../apiClient';
+import apiClient, { getAccessToken, getWatchlist, addToWatchlist, removeFromWatchlist } from '../apiClient';
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
@@ -12,6 +12,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
+  const [watchlistIds, setWatchlistIds] = useState(new Set());
   const isAuthenticated = !!getAccessToken();
 
   // Fetch movies on mount
@@ -20,8 +21,13 @@ export default function Home() {
       try {
         const response = await apiClient.get('/api/catalog/movies');
         setMovies(response.data);
+        
+        if (isAuthenticated) {
+          const watchlist = await getWatchlist();
+          setWatchlistIds(new Set(watchlist.map(m => m.id)));
+        }
       } catch (err) {
-        console.error('Failed to fetch movies', err);
+        console.error('Failed to fetch movies or watchlist', err);
       } finally {
         setLoading(false);
       }
@@ -52,6 +58,25 @@ export default function Home() {
   }, [searchQuery]);
 
   const featuredMovie = movies.length > 0 ? movies[0] : null;
+
+  const handleToggleWatchlist = async (movieId, isWatchlisted) => {
+    if (!isAuthenticated) return;
+    try {
+      if (isWatchlisted) {
+        await removeFromWatchlist(movieId);
+        setWatchlistIds(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(movieId);
+          return newSet;
+        });
+      } else {
+        await addToWatchlist(movieId);
+        setWatchlistIds(prev => new Set(prev).add(movieId));
+      }
+    } catch (err) {
+      console.error('Failed to toggle watchlist', err);
+    }
+  };
 
   return (
     <div className="bg-surface text-on-surface min-h-screen flex flex-col relative">
@@ -188,7 +213,13 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-gutter">
               {movies.map(movie => (
-                <MovieCard key={movie.id} {...movie} image={movie.posterUrl} />
+                <MovieCard 
+                  key={movie.id} 
+                  {...movie} 
+                  image={movie.posterUrl} 
+                  isWatchlisted={watchlistIds.has(movie.id)}
+                  onToggleWatchlist={() => handleToggleWatchlist(movie.id, watchlistIds.has(movie.id))}
+                />
               ))}
             </div>
           )}

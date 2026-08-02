@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 const app = express();
@@ -58,6 +59,76 @@ app.get('/showtimes/:id', async (req, res) => {
 });
 
 import { exec } from 'child_process';
+
+// Middleware to authenticate JWT
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  
+  if (!token) return res.status(401).json({ error: 'Access token required' });
+  
+  jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret', (err, user) => {
+    if (err) return res.status(403).json({ error: 'Invalid or expired token' });
+    req.userId = user.userId || user.id; // Support different JWT payloads if necessary
+    next();
+  });
+};
+
+// Get user watchlist
+app.get('/watchlist', authenticateToken, async (req, res) => {
+  try {
+    const watchlists = await prisma.watchlist.findMany({
+      where: { userId: req.userId },
+      include: { movie: true }
+    });
+    // Extract just the movies and add the watchlist id
+    const movies = watchlists.map(w => ({ ...w.movie, watchlistId: w.id }));
+    res.json(movies);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch watchlist' });
+  }
+});
+
+// Add movie to watchlist
+app.post('/watchlist', authenticateToken, async (req, res) => {
+  const { movieId } = req.body;
+  try {
+    const existing = await prisma.watchlist.findUnique({
+      where: { userId_movieId: { userId: req.userId, movieId } }
+    });
+    if (existing) return res.status(400).json({ error: 'Movie already in watchlist' });
+    
+    const watchlist = await prisma.watchlist.create({
+      data: {
+        userId: req.userId,
+        movieId
+      },
+      include: { movie: true }
+    });
+    res.status(201).json(watchlist.movie);
+  } catch (err) {
+    console.error('Failed to add to watchlist', err);
+    res.status(500).json({ error: 'Failed to add to watchlist' });
+  }
+});
+
+// Remove movie from watchlist
+app.delete('/watchlist/:movieId', authenticateToken, async (req, res) => {
+  const { movieId } = req.params;
+  try {
+    await prisma.watchlist.delete({
+      where: { userId_movieId: { userId: req.userId, movieId } }
+    });
+    res.json({ message: 'Removed from watchlist' });
+  } catch (err) {
+    // If record doesn't exist, ignore and return 200
+    if (err.code === 'P2025') {
+      return res.json({ message: 'Removed from watchlist' });
+    }
+    console.error('Failed to remove from watchlist', err);
+    res.status(500).json({ error: 'Failed to remove from watchlist' });
+  }
+});
 
 app.post('/sync', (req, res) => {
   exec('node src/tmdb-sync.js', (error, stdout, stderr) => {

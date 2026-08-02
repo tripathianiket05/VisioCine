@@ -59,6 +59,22 @@ export const logout = async () => {
   }
 };
 
+// Watchlist API
+export const getWatchlist = async () => {
+  const res = await apiClient.get('/api/catalog/watchlist');
+  return res.data;
+};
+
+export const addToWatchlist = async (movieId) => {
+  const res = await apiClient.post('/api/catalog/watchlist', { movieId });
+  return res.data;
+};
+
+export const removeFromWatchlist = async (movieId) => {
+  const res = await apiClient.delete(`/api/catalog/watchlist/${movieId}`);
+  return res.data;
+};
+
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,

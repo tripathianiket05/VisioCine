@@ -3,10 +3,12 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BottomNav from '../components/BottomNav';
-import apiClient, { getCurrentUser } from '../apiClient';
+import apiClient, { getCurrentUser, getWatchlist, removeFromWatchlist } from '../apiClient';
+import MovieCard from '../components/MovieCard';
 
 export default function Profile() {
   const [bookings, setBookings] = useState([]);
+  const [watchlist, setWatchlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -42,6 +44,14 @@ export default function Profile() {
         );
         
         setBookings(enhancedBookings);
+        
+        // Fetch watchlist
+        try {
+          const watchlistData = await getWatchlist();
+          setWatchlist(watchlistData);
+        } catch (wlErr) {
+          console.error('Failed to fetch watchlist', wlErr);
+        }
       } catch (err) {
         console.error('Failed to fetch bookings', err);
         setError('Failed to load your booking history.');
@@ -77,11 +87,35 @@ export default function Profile() {
             {activeTab === 'watchlist' ? (
               <>
                 <h2 className="font-headline-md text-2xl text-white mb-6">Watchlist</h2>
-                <div className="glass-panel p-8 rounded-2xl text-center">
-                  <span className="material-symbols-outlined text-[48px] text-on-surface-variant mb-4">favorite</span>
-                  <h3 className="font-headline-md text-xl text-white mb-2">Watchlist coming soon</h3>
-                  <p className="text-on-surface-variant">We're working hard on bringing you this feature!</p>
-                </div>
+                {watchlist.length === 0 ? (
+                  <div className="glass-panel p-8 rounded-2xl text-center">
+                    <span className="material-symbols-outlined text-[48px] text-on-surface-variant mb-4">favorite</span>
+                    <h3 className="font-headline-md text-xl text-white mb-2">Your watchlist is empty</h3>
+                    <p className="text-on-surface-variant mb-6">Save movies to watch later!</p>
+                    <Link to="/" className="bg-primary hover:bg-inverse-primary text-white font-label-md py-3 px-6 rounded-lg transition-all">
+                      Browse Movies
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-gutter">
+                    {watchlist.map(movie => (
+                      <MovieCard 
+                        key={movie.id} 
+                        {...movie} 
+                        image={movie.posterUrl} 
+                        isWatchlisted={true}
+                        onToggleWatchlist={async () => {
+                          try {
+                            await removeFromWatchlist(movie.id);
+                            setWatchlist(prev => prev.filter(m => m.id !== movie.id));
+                          } catch (err) {
+                            console.error('Failed to remove from watchlist', err);
+                          }
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
               </>
             ) : (
               <>

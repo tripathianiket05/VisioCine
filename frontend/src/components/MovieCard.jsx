@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-export default function MovieCard({ id, title, genre, rating, image }) {
+export default function MovieCard({ id, title, genre, rating, image, isWatchlisted, onToggleWatchlist }) {
   return (
     <div className="group relative rounded-xl overflow-hidden glass-panel border border-white/5 hover:border-primary/30 transition-all duration-500 cursor-pointer">
       <div className="aspect-[2/3] w-full relative overflow-hidden">
@@ -14,6 +14,24 @@ export default function MovieCard({ id, title, genre, rating, image }) {
           <span className="material-symbols-outlined text-[14px] text-tertiary-fixed-dim" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
           <span className="font-label-md text-label-md text-white">{rating}</span>
         </div>
+        {/* Watchlist Heart Button */}
+        {onToggleWatchlist && (
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleWatchlist();
+            }}
+            className="absolute top-3 left-3 bg-surface-container-high/80 backdrop-blur-md w-8 h-8 rounded-full flex items-center justify-center border border-white/10 hover:bg-primary/20 transition-colors z-20"
+          >
+            <span 
+              className={`material-symbols-outlined text-[18px] ${isWatchlisted ? 'text-primary' : 'text-white/80'}`}
+              style={{ fontVariationSettings: isWatchlisted ? "'FILL' 1" : "'FILL' 0" }}
+            >
+              favorite
+            </span>
+          </button>
+        )}
         {/* Hover Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>

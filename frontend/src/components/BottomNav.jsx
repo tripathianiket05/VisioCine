@@ -7,15 +7,15 @@ export default function BottomNav() {
         <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
         <span className="font-label-md text-[10px] mt-1">Home</span>
       </Link>
-      <Link to="/profile" className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed-dim transition-all">
+      <Link to="/profile?tab=bookings" className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed-dim transition-all">
         <span className="material-symbols-outlined">confirmation_number</span>
         <span className="font-label-md text-[10px] mt-1">Bookings</span>
       </Link>
-      <Link to="/profile" className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed-dim transition-all">
+      <Link to="/profile?tab=watchlist" className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed-dim transition-all">
         <span className="material-symbols-outlined">favorite</span>
         <span className="font-label-md text-[10px] mt-1">Watchlist</span>
       </Link>
-      <Link to="/profile" className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed-dim transition-all">
+      <Link to="/profile?tab=profile" className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary-fixed-dim transition-all">
         <span className="material-symbols-outlined">person</span>
         <span className="font-label-md text-[10px] mt-1">Profile</span>
       </Link>

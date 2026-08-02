@@ -20,8 +20,9 @@ model Movie {
   duration    Int?
   releaseYear Int?
   createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  updatedAt   DateTime    @updatedAt
   Showtimes   Showtime[]
+  Watchlists  Watchlist[]
 }
 
 model Theatre {
@@ -43,4 +44,14 @@ model Showtime {
   theatre    Theatre  @relation(fields: [theatreId], references: [id])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model Watchlist {
+  id        String   @id @default(uuid())
+  userId    String
+  movieId   String
+  movie     Movie    @relation(fields: [movieId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, movieId])
 }
