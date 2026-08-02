@@ -4,8 +4,8 @@
   "description": "Monorepo root for VisioCine backend microservices",
   "scripts": {
     "install:all": "npm install --prefix api-gateway && npm install --prefix auth-service && npm install --prefix catalog-service && npm install --prefix booking-service && npm install --prefix payment-service && npm install --prefix search-service",
-    "prisma:generate": "npx prisma generate --schema=auth-service/prisma/schema.prisma && npx prisma generate --schema=catalog-service/prisma/schema.prisma && npx prisma generate --schema=booking-service/prisma/schema.prisma",
-    "prisma:push": "npx prisma db push --schema=auth-service/prisma/schema.prisma && npx prisma db push --schema=catalog-service/prisma/schema.prisma && npx prisma db push --schema=booking-service/prisma/schema.prisma",
+    "prisma:generate": "npx prisma@5.22.0 generate --schema=auth-service/prisma/schema.prisma && npx prisma@5.22.0 generate --schema=catalog-service/prisma/schema.prisma && npx prisma@5.22.0 generate --schema=booking-service/prisma/schema.prisma",
+    "prisma:push": "npx prisma@5.22.0 db push --schema=auth-service/prisma/schema.prisma && npx prisma@5.22.0 db push --schema=catalog-service/prisma/schema.prisma && npx prisma@5.22.0 db push --schema=booking-service/prisma/schema.prisma",
     "build": "npm run install:all && npm run prisma:generate",
     "start": "concurrently \"npm run dev --prefix api-gateway\" \"npm run dev --prefix auth-service\" \"npm run dev --prefix catalog-service\" \"npm run dev --prefix booking-service\" \"npm run dev --prefix payment-service\" \"npm run dev --prefix search-service\"",
     "start:consumers": "concurrently \"npm run start:consumer --prefix booking-service\""
