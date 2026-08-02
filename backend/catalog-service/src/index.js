@@ -57,6 +57,18 @@ app.get('/showtimes/:id', async (req, res) => {
   }
 });
 
+import { exec } from 'child_process';
+
+app.post('/sync', (req, res) => {
+  exec('node src/tmdb-sync.js', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Sync error: ${error.message}`);
+      return res.status(500).json({ error: 'Sync failed', details: error.message });
+    }
+    res.json({ message: 'Sync completed', stdout });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`[Catalog Service] Running on port ${PORT}`);
 });
