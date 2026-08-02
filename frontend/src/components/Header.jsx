@@ -120,7 +120,23 @@ export default function Header() {
                         <p className="text-white/50 text-xs truncate">{user?.email || ''}</p>
                       </div>
                       <Link 
-                        to="/profile"
+                        to="/profile?tab=bookings"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="w-full text-left px-4 py-2 text-white/80 hover:text-primary hover:bg-white/5 transition-colors font-body-md flex items-center gap-2"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">confirmation_number</span>
+                        My Bookings
+                      </Link>
+                      <Link 
+                        to="/profile?tab=watchlist"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="w-full text-left px-4 py-2 text-white/80 hover:text-primary hover:bg-white/5 transition-colors font-body-md flex items-center gap-2"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">favorite</span>
+                        Watchlist
+                      </Link>
+                      <Link 
+                        to="/profile?tab=profile"
                         onClick={() => setIsProfileMenuOpen(false)}
                         className="w-full text-left px-4 py-2 text-white/80 hover:text-primary hover:bg-white/5 transition-colors font-body-md flex items-center gap-2"
                       >
