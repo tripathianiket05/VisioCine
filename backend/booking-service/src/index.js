@@ -12,7 +12,7 @@ const redis = process.env.REDIS_URL
     });
 
 const app = express();
-const PORT = process.env.PORT || 3004;
+const PORT = 3004;
 
 // Scheduled cleanup for stale PENDING bookings (runs every 1 minute)
 setInterval(async () => {

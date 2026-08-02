@@ -4,7 +4,7 @@ import amqplib from 'amqplib';
 import 'dotenv/config';
 
 const app = express();
-const PORT = process.env.PORT || 3005;
+const PORT = 3005;
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://localhost:5672';
 
 // CORS is handled by API Gateway

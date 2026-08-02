@@ -7,7 +7,7 @@ const client = new Client({
 });
 
 const app = express();
-const PORT = process.env.PORT || 3003;
+const PORT = 3003;
 
 // CORS handled by API Gateway
 app.use(express.json());

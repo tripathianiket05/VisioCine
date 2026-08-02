@@ -8,7 +8,7 @@ import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 
 const prisma = new PrismaClient();
 
