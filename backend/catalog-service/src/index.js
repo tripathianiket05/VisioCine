@@ -67,7 +67,7 @@ const authenticateToken = (req, res, next) => {
   
   if (!token) return res.status(401).json({ error: 'Access token required' });
   
-  jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret', (err, user) => {
+  jwt.verify(token, process.env.ACCESS_SECRET || 'supersecret_access_key', (err, user) => {
     if (err) return res.status(403).json({ error: 'Invalid or expired token' });
     req.userId = user.userId || user.id; // Support different JWT payloads if necessary
     next();
