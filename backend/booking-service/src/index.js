@@ -138,6 +138,27 @@ app.get('/status/:id', async (req, res) => {
   }
 });
 
+app.get('/showtimes/:showtimeId/booked-seats', async (req, res) => {
+  try {
+    const bookings = await prisma.booking.findMany({
+      where: {
+        showtimeId: req.params.showtimeId,
+        status: {
+          in: ['PENDING', 'CONFIRMED']
+        }
+      },
+      select: {
+        seatIds: true
+      }
+    });
+    
+    const bookedSeats = bookings.flatMap(b => b.seatIds);
+    res.json({ bookedSeats });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`[Booking Service] Running on port ${PORT}`);
 });

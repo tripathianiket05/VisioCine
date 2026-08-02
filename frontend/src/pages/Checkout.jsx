@@ -14,16 +14,21 @@ export default function Checkout() {
 
   const [showtime, setShowtime] = useState(null);
 
+  const [bookedSeats, setBookedSeats] = useState([]);
+
   useEffect(() => {
-    const fetchShowtime = async () => {
+    const fetchData = async () => {
       try {
         const response = await apiClient.get(`/api/catalog/showtimes/${showtimeId}`);
         setShowtime(response.data);
+        
+        const bookedResponse = await apiClient.get(`/api/bookings/showtimes/${showtimeId}/booked-seats`);
+        setBookedSeats(bookedResponse.data.bookedSeats || []);
       } catch (err) {
-        console.error('Failed to fetch showtime', err);
+        console.error('Failed to fetch showtime or booked seats', err);
       }
     };
-    if (showtimeId) fetchShowtime();
+    if (showtimeId) fetchData();
   }, [showtimeId]);
 
   // Mock seat layout
@@ -303,7 +308,7 @@ export default function Checkout() {
                         {cols.map(col => {
                           const seatId = `${row}${col}`;
                           const isSelected = selectedSeats.includes(seatId);
-                          const isTaken = (row === 'C' && (col === 4 || col === 5)) || (row === 'E' && col === 8);
+                          const isTaken = bookedSeats.includes(seatId);
                           
                           return (
                             <button 
