@@ -12,6 +12,33 @@ export default function Showtimes() {
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWatchlisted, setIsWatchlisted] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!getAccessToken());
+
+  // Listen for auth changes
+  useEffect(() => {
+    const handleAuthChange = (e) => {
+      setIsAuthenticated(e.detail.isAuthenticated);
+    };
+    window.addEventListener('auth-change', handleAuthChange);
+    return () => window.removeEventListener('auth-change', handleAuthChange);
+  }, []);
+
+  // Fetch watchlist when authentication status changes to true
+  useEffect(() => {
+    const fetchWatchlist = async () => {
+      if (isAuthenticated) {
+        try {
+          const wlRes = await apiClient.get('/api/catalog/watchlist');
+          setIsWatchlisted(wlRes.data.some(m => String(m.id) === String(id)));
+        } catch (e) {
+          console.error('Watchlist fetch error', e);
+        }
+      } else {
+        setIsWatchlisted(false);
+      }
+    };
+    fetchWatchlist();
+  }, [id, isAuthenticated]);
 
   // Date selection
   const [dates, setDates] = useState([]);
@@ -39,16 +66,6 @@ export default function Showtimes() {
         // Fetch showtimes
         const showtimesRes = await apiClient.get(`/api/catalog/movies/${id}/showtimes`);
         setAllShowtimes(showtimesRes.data);
-
-        // Fetch Watchlist if logged in
-        if (getAccessToken()) {
-          try {
-            const wlRes = await apiClient.get('/api/catalog/watchlist');
-            setIsWatchlisted(wlRes.data.some(m => String(m.id) === String(id)));
-          } catch (e) {
-            console.error('Watchlist fetch error', e);
-          }
-        }
       } catch (err) {
         console.error('Failed to fetch data', err);
       } finally {
