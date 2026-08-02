@@ -81,8 +81,8 @@ app.post('/login', async (req, res) => {
     // Set refresh token in HttpOnly cookie
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
       maxAge: REFRESH_TOKEN_TTL_SECONDS * 1000,
     });
 
@@ -165,8 +165,8 @@ app.post('/refresh', async (req, res) => {
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
       maxAge: REFRESH_TOKEN_TTL_SECONDS * 1000,
     });
 
