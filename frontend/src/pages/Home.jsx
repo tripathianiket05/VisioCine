@@ -85,7 +85,7 @@ export default function Home() {
       <main className="flex-grow pb-24 md:pb-12">
         {/* Hero Section */}
         {featuredMovie ? (
-          <section className="relative w-full h-[70vh] md:h-[85vh] flex items-end">
+          <section className="relative w-full h-[70vh] md:h-[85vh] flex items-center pt-24 md:pt-32">
             {/* Background Image */}
             <div className="absolute inset-0 w-full h-full">
               <div 
@@ -98,7 +98,7 @@ export default function Home() {
             </div>
             
             {/* Hero Content */}
-            <div className="relative z-20 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pb-12 md:pb-24 flex flex-col items-start gap-6">
+            <div className="relative z-20 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col items-start gap-6">
               <div className="inline-flex items-center gap-2 bg-primary-container/20 border border-primary-container/50 px-3 py-1 rounded-full text-primary font-label-md text-label-md">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
                 <span>Now Premiering</span>
