@@ -57,18 +57,16 @@ async function sync() {
           // Add a small delay to avoid TMDB rate limits
           await new Promise(resolve => setTimeout(resolve, 300));
           
-          const detailsRes = await axiosInstance.get(`https://api.themoviedb.org/3/movie/${m.id}?api_key=${apiKey}&language=en-US`, { timeout: 10000 });
+          const detailsRes = await axiosInstance.get(`https://api.themoviedb.org/3/movie/${m.id}?api_key=${apiKey}&language=en-US&append_to_response=credits,videos`, { timeout: 10000 });
           details = detailsRes.data;
           
-          const creditsRes = await axiosInstance.get(`https://api.themoviedb.org/3/movie/${m.id}/credits?api_key=${apiKey}&language=en-US`, { timeout: 10000 });
-          const credits = creditsRes.data;
+          const credits = details.credits || {};
           topCast = (credits.cast || []).slice(0, 5).map(c => ({
             name: c.name, role: c.character, img: c.profile_path ? `https://image.tmdb.org/t/p/w200${c.profile_path}` : null
           }));
 
-          const videosRes = await axiosInstance.get(`https://api.themoviedb.org/3/movie/${m.id}/videos?api_key=${apiKey}&language=en-US`, { timeout: 10000 });
-          const videosData = videosRes.data;
-          const trailer = (videosData.results || []).find(v => v.type === "Trailer" && v.site === "YouTube");
+          const videosData = details.videos || {};
+          const trailer = (videosData.results || []).find(v => (v.type === "Trailer" || v.type === "Teaser") && v.site === "YouTube");
           if (trailer) trailerUrl = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
         } catch (err) {
           console.warn(`⚠️ Failed to fetch details for ${m.title}, using defaults. Error: ${err.message}`);
