@@ -78,7 +78,35 @@ export default function Profile() {
                 {user?.name?.charAt(0).toUpperCase()}
               </div>
               <h2 className="font-headline-md text-xl text-white mb-1">{user?.name}</h2>
-              <p className="text-on-surface-variant font-body-md text-sm">{user?.email}</p>
+              <p className="text-on-surface-variant font-body-md text-sm mb-6">{user?.email}</p>
+              
+              <div className="w-full border-t border-white/10 my-4 hidden lg:block"></div>
+              
+              <nav className="w-full flex flex-col gap-2 hidden lg:flex">
+                <Link to="/profile?tab=bookings" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-label-md ${activeTab === 'bookings' ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-on-surface-variant hover:bg-white/5 hover:text-white'}`}>
+                  <span className="material-symbols-outlined">confirmation_number</span>
+                  My Bookings
+                </Link>
+                <Link to="/profile?tab=watchlist" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-label-md ${activeTab === 'watchlist' ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-on-surface-variant hover:bg-white/5 hover:text-white'}`}>
+                  <span className="material-symbols-outlined">favorite</span>
+                  Watchlist
+                </Link>
+                
+                <div className="w-full border-t border-white/10 my-2"></div>
+                
+                <button onClick={() => { localStorage.clear(); window.location.href='/login'; }} className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-label-md text-red-400 hover:bg-red-500/10">
+                  <span className="material-symbols-outlined">logout</span>
+                  Logout
+                </button>
+              </nav>
+
+              {/* Mobile Logout (shows only on profile tab) */}
+              <div className="w-full mt-4 lg:hidden">
+                <button onClick={() => { localStorage.clear(); window.location.href='/login'; }} className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all font-label-md text-red-400 bg-red-500/10 border border-red-500/20">
+                  <span className="material-symbols-outlined">logout</span>
+                  Logout
+                </button>
+              </div>
             </div>
           </div>
           
