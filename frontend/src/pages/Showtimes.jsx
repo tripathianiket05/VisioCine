@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import apiClient from '../apiClient';
+import apiClient, { getAccessToken } from '../apiClient';
 
 export default function Showtimes() {
   const { id } = useParams();
@@ -10,6 +10,8 @@ export default function Showtimes() {
   const [allShowtimes, setAllShowtimes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isWatchlisted, setIsWatchlisted] = useState(false);
 
   // Date selection
   const [dates, setDates] = useState([]);
@@ -37,6 +39,16 @@ export default function Showtimes() {
         // Fetch showtimes
         const showtimesRes = await apiClient.get(`/api/catalog/movies/${id}/showtimes`);
         setAllShowtimes(showtimesRes.data);
+
+        // Fetch Watchlist if logged in
+        if (getAccessToken()) {
+          try {
+            const wlRes = await apiClient.get('/api/catalog/watchlist');
+            setIsWatchlisted(wlRes.data.some(m => String(m.id) === String(id)));
+          } catch (e) {
+            console.error('Watchlist fetch error', e);
+          }
+        }
       } catch (err) {
         console.error('Failed to fetch data', err);
       } finally {
@@ -46,6 +58,39 @@ export default function Showtimes() {
     
     fetchData();
   }, [id]);
+
+  const toggleWatchlist = async () => {
+    if (!getAccessToken()) {
+      navigate('/login');
+      return;
+    }
+    try {
+      if (isWatchlisted) {
+        await apiClient.delete(`/api/catalog/watchlist/${id}`);
+        setIsWatchlisted(false);
+      } else {
+        await apiClient.post('/api/catalog/watchlist', { movieId: id });
+        setIsWatchlisted(true);
+      }
+    } catch (err) {
+      console.error('Failed to toggle watchlist', err);
+      alert('Could not update watchlist. Please try again.');
+    }
+    setIsMenuOpen(false);
+  };
+
+  const shareMovie = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: movie?.title || 'Cineplex Movie',
+        url: window.location.href
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    }
+    setIsMenuOpen(false);
+  };
 
   const showtimesByTheatre = useMemo(() => {
     if (!selectedDate || allShowtimes.length === 0) return {};
@@ -85,9 +130,38 @@ export default function Showtimes() {
         >
           <span className="material-symbols-outlined text-[24px]">arrow_back</span>
         </button>
-        <button className="pointer-events-auto glass-panel rounded-full p-2 text-on-surface hover:text-primary transition-colors flex items-center justify-center">
-          <span className="material-symbols-outlined text-[24px]">more_vert</span>
-        </button>
+        <div className="relative pointer-events-auto">
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="glass-panel rounded-full p-2 text-on-surface hover:text-primary transition-colors flex items-center justify-center"
+          >
+            <span className="material-symbols-outlined text-[24px]">more_vert</span>
+          </button>
+          
+          {isMenuOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)}></div>
+              <div className="absolute top-full right-0 mt-2 w-48 bg-surface-container-high border border-white/10 rounded-xl shadow-2xl py-2 z-50 glass-panel">
+                <button 
+                  onClick={toggleWatchlist}
+                  className="w-full text-left px-4 py-3 text-white/90 hover:text-primary hover:bg-white/5 transition-colors font-body-md flex items-center gap-3"
+                >
+                  <span className={`material-symbols-outlined text-[20px] ${isWatchlisted ? 'text-primary' : ''}`} style={{ fontVariationSettings: isWatchlisted ? "'FILL' 1" : "'FILL' 0" }}>
+                    favorite
+                  </span>
+                  {isWatchlisted ? 'Remove Watchlist' : 'Add to Watchlist'}
+                </button>
+                <button 
+                  onClick={shareMovie}
+                  className="w-full text-left px-4 py-3 text-white/90 hover:text-primary hover:bg-white/5 transition-colors font-body-md flex items-center gap-3"
+                >
+                  <span className="material-symbols-outlined text-[20px]">share</span>
+                  Share
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       <main className="w-full">
