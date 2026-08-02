@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Cinemas from './pages/Cinemas';
 import Offers from './pages/Offers';
 import Profile from './pages/Profile';
+import ScrollToTop from './components/ScrollToTop';
 import { initAuth } from './apiClient';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
