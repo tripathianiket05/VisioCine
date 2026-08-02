@@ -55,7 +55,7 @@ app.get('/theatres', async (req, res) => {
       }
     });
 
-    const theatres = result.hits.hits.map(hit => ({
+    const theatres = result.body.hits.hits.map(hit => ({
       id: hit._source.id,
       name: hit._source.name,
       location: hit._source.location,

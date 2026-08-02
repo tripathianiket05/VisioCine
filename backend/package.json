@@ -11,6 +11,10 @@
     "start:consumers": "concurrently \"npm run start:consumer --prefix booking-service\""
   },
   "dependencies": {
+    "@prisma/client": "^5.22.0",
     "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
   }
 }
