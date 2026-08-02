@@ -57,6 +57,22 @@ app.post('/lock-seats', async (req, res) => {
   const lockedSeats = [];
 
   try {
+    // 0. Check database if seats are already booked (handles cases where Redis lock expired)
+    const existingBookings = await prisma.booking.findMany({
+      where: {
+        showtimeId,
+        status: { in: ['PENDING', 'CONFIRMED'] }
+      },
+      select: { seatIds: true }
+    });
+    
+    const alreadyBookedSeats = existingBookings.flatMap(b => b.seatIds);
+    const conflictingSeats = seatIds.filter(seat => alreadyBookedSeats.includes(seat));
+    
+    if (conflictingSeats.length > 0) {
+      return res.status(409).json({ error: `Seats ${conflictingSeats.join(', ')} are already booked.` });
+    }
+
     // 1. Attempt to acquire locks for all requested seats using Redis SETNX
     for (const seatId of seatIds) {
       const lockKey = `seat_lock:${showtimeId}:${seatId}`;
