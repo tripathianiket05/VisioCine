@@ -9,7 +9,7 @@
     "init": "node src/init-elastic.js"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^8.19.2",
+    "@elastic/elasticsearch": "7.13.0",
     "cors": "^2.8.6",
     "express": "^5.2.1"
   }

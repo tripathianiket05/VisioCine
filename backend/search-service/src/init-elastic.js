@@ -9,9 +9,10 @@ async function init() {
   const indexName = 'theatres';
 
   try {
-    const exists = await client.indices.exists({ index: indexName });
-    if (exists) {
+    try {
       await client.indices.delete({ index: indexName });
+    } catch (err) {
+      if (err.meta && err.meta.statusCode !== 404) throw err;
     }
 
     await client.indices.create({
