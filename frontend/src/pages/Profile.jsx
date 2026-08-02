@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BottomNav from '../components/BottomNav';
@@ -10,7 +10,12 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
   const user = getCurrentUser();
+  
+  const queryParams = new URLSearchParams(location.search);
+  const activeTab = queryParams.get('tab') || 'bookings';
+
 
   useEffect(() => {
     if (!user) {
@@ -57,7 +62,7 @@ export default function Profile() {
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar / User Info */}
-          <div className="lg:col-span-1">
+          <div className={`lg:col-span-1 ${activeTab === 'profile' ? 'block' : 'hidden lg:block'}`}>
             <div className="glass-panel p-6 rounded-2xl flex flex-col items-center text-center">
               <div className="w-24 h-24 bg-primary/20 text-primary rounded-full flex items-center justify-center text-4xl font-display mb-4">
                 {user?.name?.charAt(0).toUpperCase()}
@@ -67,9 +72,20 @@ export default function Profile() {
             </div>
           </div>
           
-          {/* Main Content / Booking History */}
-          <div className="lg:col-span-3">
-            <h2 className="font-headline-md text-2xl text-white mb-6">Booking History</h2>
+          {/* Main Content / Bookings or Watchlist */}
+          <div className={`lg:col-span-3 ${activeTab !== 'profile' ? 'block' : 'hidden lg:block'}`}>
+            {activeTab === 'watchlist' ? (
+              <>
+                <h2 className="font-headline-md text-2xl text-white mb-6">Watchlist</h2>
+                <div className="glass-panel p-8 rounded-2xl text-center">
+                  <span className="material-symbols-outlined text-[48px] text-on-surface-variant mb-4">favorite</span>
+                  <h3 className="font-headline-md text-xl text-white mb-2">Watchlist coming soon</h3>
+                  <p className="text-on-surface-variant">We're working hard on bringing you this feature!</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="font-headline-md text-2xl text-white mb-6">Booking History</h2>
             
             {loading ? (
               <div className="flex justify-center py-12">
@@ -158,6 +174,8 @@ export default function Profile() {
                   );
                 })}
               </div>
+            )}
+              </>
             )}
           </div>
         </div>
