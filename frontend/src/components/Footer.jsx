@@ -11,10 +11,7 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-3 mb-6">
-              <span className="material-symbols-outlined text-primary text-[28px]">movie</span>
-              <span className="font-display text-3xl text-white uppercase tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
-                CINEPLEX
-              </span>
+              <img src="/logo.svg" alt="VCine Logo" className="h-16 w-16" />
             </div>
             <p className="text-white/60 font-body-md max-w-md leading-relaxed mb-8">
               Experience the magic of cinema with cutting-edge technology, premium seating, and unparalleled service.

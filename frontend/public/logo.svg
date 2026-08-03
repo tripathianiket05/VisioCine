@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="gradC" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4edea3" />
+      <stop offset="50%" stop-color="#e11d48" />
+      <stop offset="100%" stop-color="#ffb3b6" />
+    </linearGradient>
+    
+    <linearGradient id="gradV" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffb3b6" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#e11d48" stop-opacity="0.9" />
+    </linearGradient>
+
+    <!-- Background Rays -->
+    <linearGradient id="rayLeft" x1="50%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffb3b6" stop-opacity="0" />
+      <stop offset="100%" stop-color="#e11d48" stop-opacity="0.4" />
+    </linearGradient>
+
+    <linearGradient id="rayRight" x1="50%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffb3b6" stop-opacity="0" />
+      <stop offset="100%" stop-color="#e11d48" stop-opacity="0.4" />
+    </linearGradient>
+
+    <!-- Filters -->
+    <filter id="heavyGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="25" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Glowing background light -->
+  <circle cx="250" cy="220" r="120" fill="#e11d48" filter="url(#heavyGlow)" opacity="0.15" />
+
+  <!-- Rays -->
+  <polygon points="120,40 250,280 200,280" fill="url(#rayLeft)" filter="url(#softGlow)" />
+  <polygon points="380,40 250,280 300,280" fill="url(#rayRight)" filter="url(#softGlow)" />
+
+  <!-- The 'V' -->
+  <path d="M 160 110 L 250 310 L 340 110 L 290 110 L 250 210 L 210 110 Z" fill="url(#gradV)" filter="url(#softGlow)" />
+
+  <!-- The 'C' Film Reel Outer Track -->
+  <path d="M 340 130 C 240 30 110 80 90 220 C 70 360 200 420 310 350 C 340 330 360 290 340 260" 
+        fill="none" stroke="url(#gradC)" stroke-width="50" stroke-linecap="round" filter="url(#softGlow)" />
+  
+  <!-- Film Sprocket Holes -->
+  <!-- We use a dashed stroke on top of the C to simulate film holes -->
+  <path d="M 340 130 C 240 30 110 80 90 220 C 70 360 200 420 310 350 C 340 330 360 290 340 260" 
+        fill="none" stroke="#0c1324" stroke-width="12" stroke-dasharray="10, 15" stroke-linecap="butt" />
+
+  <!-- The Text 'VCine' -->
+  <text x="250" y="460" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="72" text-anchor="middle" fill="#ffb3b6" filter="url(#softGlow)" letter-spacing="2">VCine</text>
+</svg>

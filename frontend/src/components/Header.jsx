@@ -136,13 +136,12 @@ export default function Header() {
         <div className="flex justify-between items-center px-6 md:px-12 max-w-[1600px] mx-auto">
           
           <div className="flex items-center gap-10">
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-rose-600 flex items-center justify-center shadow-lg shadow-primary/30 group-hover:shadow-primary/50 transition-all duration-300 group-hover:scale-105">
-                <span className="material-symbols-outlined text-white text-[24px]">movie</span>
-              </div>
-              <span className="font-display text-2xl md:text-3xl text-white tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
-                VISIOCINE
-              </span>
+            <Link to="/" className="flex items-center group">
+              <img 
+                src="/logo.svg" 
+                alt="VCine Logo" 
+                className="h-16 w-16 drop-shadow-2xl group-hover:scale-105 transition-transform duration-300"
+              />
             </Link>
 
             <nav className="hidden md:flex items-center gap-2">
