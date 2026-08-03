@@ -1,6 +1,6 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { getAccessToken, logout } from '../apiClient';
+import apiClient, { getAccessToken, logout } from '../apiClient';
 
 export default function Header() {
   const [locationName, setLocationName] = useState('Detecting...');
@@ -9,7 +9,13 @@ export default function Header() {
   const [user, setUser] = useState(null);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [movieResults, setMovieResults] = useState([]);
+  const [cinemaResults, setCinemaResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [allMovies, setAllMovies] = useState([]);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleAuthChange = (e) => {
@@ -19,6 +25,38 @@ export default function Header() {
     window.addEventListener('auth-change', handleAuthChange);
     return () => window.removeEventListener('auth-change', handleAuthChange);
   }, []);
+
+  useEffect(() => {
+    if (isSearchOpen && allMovies.length === 0) {
+      apiClient.get('/api/catalog/movies').then(res => setAllMovies(res.data)).catch(console.error);
+    }
+  }, [isSearchOpen]);
+
+  useEffect(() => {
+    if (!searchQuery) {
+      setMovieResults([]);
+      setCinemaResults([]);
+      return;
+    }
+    
+    setIsSearching(true);
+    
+    const delayDebounceFn = setTimeout(async () => {
+      const q = searchQuery.toLowerCase();
+      const filteredMovies = allMovies.filter(m => m.title.toLowerCase().includes(q));
+      setMovieResults(filteredMovies.slice(0, 4));
+      
+      try {
+        const res = await apiClient.get(`/api/search/theatres?lat=26.8467&lon=80.9462&query=${searchQuery}`);
+        setCinemaResults(Array.isArray(res.data) ? res.data.slice(0, 4) : (res.data.hits || []).slice(0, 4));
+      } catch (e) {
+        console.error(e);
+      }
+      setIsSearching(false);
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery, allMovies]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -87,7 +125,10 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-5">
-            <div className="hidden lg:flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md px-4 py-2 rounded-full cursor-pointer transition-all duration-300 group shadow-inner shadow-white/5">
+            <div 
+              onClick={() => navigate('/cinemas')}
+              className="hidden lg:flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md px-4 py-2 rounded-full cursor-pointer transition-all duration-300 group shadow-inner shadow-white/5"
+            >
               <span className="material-symbols-outlined text-[18px] text-primary group-hover:animate-bounce">location_on</span>
               <span className="text-white/90 font-label-md text-sm max-w-[120px] truncate">{locationName}</span>
               <span className="material-symbols-outlined text-[18px] text-white/40 group-hover:text-white/80 transition-colors">expand_more</span>
@@ -170,32 +211,95 @@ export default function Header() {
 
       {/* Fullscreen Search Modal */}
       {isSearchOpen && (
-        <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-[100] flex flex-col items-center pt-32 px-4 transition-all duration-300 animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-[100] flex flex-col items-center pt-32 px-4 transition-all duration-300 animate-in fade-in zoom-in-95 overflow-y-auto">
           <button 
-            onClick={() => setIsSearchOpen(false)}
+            onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }}
             className="absolute top-8 right-8 text-white/40 hover:text-white transition-colors"
           >
             <span className="material-symbols-outlined text-[36px]">close</span>
           </button>
           
-          <div className="w-full max-w-4xl flex items-center border-b-2 border-primary/50 pb-4">
+          <div className="w-full max-w-4xl flex items-center border-b-2 border-primary/50 pb-4 shrink-0">
             <span className="material-symbols-outlined text-[36px] text-primary mr-4">search</span>
             <input 
               type="text" 
               placeholder="SEARCH MOVIES, CINEMAS..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-transparent text-3xl md:text-5xl lg:text-6xl text-white placeholder-white/20 outline-none w-full font-display uppercase tracking-wider"
               autoFocus
             />
           </div>
           
-          <div className="w-full max-w-4xl mt-12 flex gap-4 text-white/40 font-label-md uppercase tracking-widest text-sm">
-            <span>Trending:</span>
-            <Link to="#" className="hover:text-white transition-colors">Dune: Part Two</Link>
-            <span>&bull;</span>
-            <Link to="#" className="hover:text-white transition-colors">IMAX</Link>
-            <span>&bull;</span>
-            <Link to="#" className="hover:text-white transition-colors">Oppenheimer</Link>
-          </div>
+          {searchQuery ? (
+            <div className="w-full max-w-4xl mt-8 flex flex-col gap-8 text-left pb-12 shrink-0">
+              {isSearching ? (
+                <div className="flex items-center gap-3 text-white/40 font-label-md">
+                  <span className="w-5 h-5 border-2 border-white/20 border-t-white/60 rounded-full animate-spin"></span>
+                  Searching...
+                </div>
+              ) : (
+                <>
+                  {movieResults.length > 0 && (
+                    <div>
+                      <h3 className="text-white/60 font-label-md uppercase tracking-widest text-sm mb-4">Movies</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {movieResults.map(m => (
+                          <div 
+                            key={m.id} 
+                            onClick={() => { setIsSearchOpen(false); setSearchQuery(''); navigate(`/movie/${m.id}`); }}
+                            className="flex items-center gap-4 bg-surface-container-low/50 hover:bg-surface-container border border-white/5 hover:border-primary/50 p-3 rounded-lg cursor-pointer transition-all"
+                          >
+                            <img src={m.posterUrl} alt={m.title} className="w-12 h-16 object-cover rounded" />
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-white font-label-md truncate">{m.title}</h4>
+                              <p className="text-white/40 text-xs truncate">{m.genre}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {cinemaResults.length > 0 && (
+                    <div>
+                      <h3 className="text-white/60 font-label-md uppercase tracking-widest text-sm mb-4 mt-2">Cinemas</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {cinemaResults.map(c => (
+                          <div 
+                            key={c.id || c._id} 
+                            onClick={() => { setIsSearchOpen(false); setSearchQuery(''); navigate(`/cinemas`); }}
+                            className="flex items-center gap-4 bg-surface-container-low/50 hover:bg-surface-container border border-white/5 hover:border-primary/50 p-4 rounded-lg cursor-pointer transition-all"
+                          >
+                            <div className="w-10 h-10 rounded bg-primary/20 flex items-center justify-center text-primary shrink-0">
+                              <span className="material-symbols-outlined">location_on</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-white font-label-md truncate">{c.name || c._source?.name}</h4>
+                              <p className="text-white/40 text-xs truncate">{c.address || c._source?.address}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {movieResults.length === 0 && cinemaResults.length === 0 && (
+                     <div className="text-white/40 font-label-md">No results found for "{searchQuery}"</div>
+                  )}
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="w-full max-w-4xl mt-12 flex flex-wrap gap-4 text-white/40 font-label-md uppercase tracking-widest text-sm shrink-0">
+              <span>Trending:</span>
+              <span className="hover:text-white transition-colors cursor-pointer" onClick={() => setSearchQuery('Dune')}>Dune: Part Two</span>
+              <span>&bull;</span>
+              <span className="hover:text-white transition-colors cursor-pointer" onClick={() => setSearchQuery('IMAX')}>IMAX</span>
+              <span>&bull;</span>
+              <span className="hover:text-white transition-colors cursor-pointer" onClick={() => setSearchQuery('Oppenheimer')}>Oppenheimer</span>
+            </div>
+          )}
         </div>
       )}
     </>

@@ -436,7 +436,7 @@ export default function Checkout() {
               </div>
             </div>
 
-            {bookingStatus === 'PAYING' && (
+            {bookingStatus !== 'PAYING' && (
               <div className="mb-6">
                 <label className="font-label-md text-sm text-on-surface-variant block mb-2">Apply Coupon</label>
                 <div className="flex gap-2">
