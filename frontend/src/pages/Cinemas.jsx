@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BottomNav from '../components/BottomNav';
@@ -56,7 +57,7 @@ export default function Cinemas() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {theatres.map(theatre => (
-              <div key={theatre.id || theatre._id} className="glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group cursor-pointer border border-white/10 hover:border-primary/50 relative overflow-hidden">
+              <Link to={`/theatre/${theatre.id || theatre._id}`} key={theatre.id || theatre._id} className="block glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group cursor-pointer border border-white/10 hover:border-primary/50 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/20 transition-colors"></div>
                 <div className="flex justify-between items-start mb-4 relative z-10">
                   <div className="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300 shadow-lg">
@@ -77,7 +78,7 @@ export default function Cinemas() {
                     <span className="material-symbols-outlined text-[16px]">restaurant</span> DINE-IN
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

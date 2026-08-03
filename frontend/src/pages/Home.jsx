@@ -164,7 +164,7 @@ export default function Home() {
            
            <div className="flex gap-6 overflow-x-auto pb-6 custom-scrollbar snap-x snap-mandatory">
              {theatres.map(theatre => (
-               <div key={theatre.id || theatre._id} className="min-w-[300px] md:min-w-[380px] snap-start glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group cursor-pointer border border-white/10 hover:border-primary/50 relative overflow-hidden shrink-0">
+               <Link to={`/theatre/${theatre.id || theatre._id}`} key={theatre.id || theatre._id} className="min-w-[300px] md:min-w-[380px] snap-start glass-panel p-6 rounded-2xl hover:-translate-y-2 transition-transform duration-300 group cursor-pointer border border-white/10 hover:border-primary/50 relative overflow-hidden shrink-0 block">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/20 transition-colors"></div>
                   <div className="flex justify-between items-start mb-4 relative z-10">
                     <div className="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300 shadow-lg">
@@ -185,7 +185,7 @@ export default function Home() {
                       <span className="material-symbols-outlined text-[16px]">restaurant</span> DINE-IN
                     </div>
                   </div>
-               </div>
+               </Link>
              ))}
              {theatres.length === 0 && <p className="text-on-surface-variant text-sm">No theatres found nearby.</p>}
            </div>

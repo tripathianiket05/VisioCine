@@ -30,6 +30,34 @@ app.get('/theatres', async (req, res) => {
   }
 });
 
+// Get showtimes for a specific theatre
+app.get('/theatres/:id/showtimes', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const showtimes = await prisma.showtime.findMany({
+      where: { theatreId: id },
+      include: { movie: true }
+    });
+    res.json(showtimes);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch showtimes for theatre' });
+  }
+});
+
+// Get a specific theatre by id
+app.get('/theatres/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const theatre = await prisma.theatre.findUnique({
+      where: { id }
+    });
+    if (!theatre) return res.status(404).json({ error: 'Theatre not found' });
+    res.json(theatre);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch theatre' });
+  }
+});
+
 // Get showtimes for a specific movie
 app.get('/movies/:id/showtimes', async (req, res) => {
   const { id } = req.params;

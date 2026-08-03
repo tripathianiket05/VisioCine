@@ -7,6 +7,7 @@ import TicketConfirmation from './pages/TicketConfirmation';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Cinemas from './pages/Cinemas';
+import Theatre from './pages/Theatre';
 import Offers from './pages/Offers';
 import Profile from './pages/Profile';
 import ScrollToTop from './components/ScrollToTop';
@@ -25,6 +26,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/cinemas" element={<Cinemas />} />
+        <Route path="/theatre/:id" element={<Theatre />} />
         <Route path="/offers" element={<Offers />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/movie/:id/showtimes" element={<Showtimes />} />
