@@ -2,6 +2,44 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import apiClient, { getAccessToken, logout } from '../apiClient';
 
+function levenshteinDistance(s1, s2) {
+  if (s1.length < s2.length) return levenshteinDistance(s2, s1);
+  if (s2.length === 0) return s1.length;
+  
+  let previousRow = Array.from({ length: s2.length + 1 }, (_, i) => i);
+  for (let i = 0; i < s1.length; i++) {
+    const currentRow = [i + 1];
+    for (let j = 0; j < s2.length; j++) {
+      const insertions = previousRow[j + 1] + 1;
+      const deletions = currentRow[j] + 1;
+      const substitutions = previousRow[j] + (s1[i] === s2[j] ? 0 : 1);
+      currentRow.push(Math.min(insertions, deletions, substitutions));
+    }
+    previousRow = currentRow;
+  }
+  return previousRow[s2.length];
+}
+
+function fuzzyMatch(query, text) {
+  const q = query.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const t = text.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!q) return false;
+  if (t.includes(q)) return true;
+  if (q.length <= 3) return false;
+  
+  const maxTypos = q.length > 5 ? 2 : 1;
+  for (let i = 0; i <= t.length - q.length; i++) {
+    // Check substrings of lengths close to query length (q.length, q.length + 1)
+    for (let lenOffset = 0; lenOffset <= 1; lenOffset++) {
+      if (i + q.length + lenOffset <= t.length) {
+        const substr = t.substring(i, i + q.length + lenOffset);
+        if (levenshteinDistance(q, substr) <= maxTypos) return true;
+      }
+    }
+  }
+  return false;
+}
+
 export default function Header() {
   const [locationName, setLocationName] = useState('Detecting...');
   const [scrolled, setScrolled] = useState(false);
@@ -43,7 +81,7 @@ export default function Header() {
     
     const delayDebounceFn = setTimeout(async () => {
       const q = searchQuery.toLowerCase();
-      const filteredMovies = allMovies.filter(m => m.title.toLowerCase().includes(q));
+      const filteredMovies = allMovies.filter(m => fuzzyMatch(q, m.title));
       setMovieResults(filteredMovies.slice(0, 4));
       
       try {
