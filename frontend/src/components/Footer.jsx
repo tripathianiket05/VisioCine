@@ -48,16 +48,16 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-label-md uppercase tracking-wider mb-6">Connect</h4>
             <div className="flex flex-col gap-4 text-white/50 font-body-md mb-8">
-              <Link to="#" className="hover:text-primary transition-colors">Contact Us</Link>
-              <Link to="#" className="hover:text-primary transition-colors">FAQ</Link>
+              <a href="mailto:support@visiocine.com" className="hover:text-primary transition-colors">Contact Us</a>
+              <Link to="/faq" className="hover:text-primary transition-colors">FAQ</Link>
             </div>
             <div className="flex gap-4">
-              <button className="w-10 h-10 rounded-full bg-white/5 hover:bg-primary/20 hover:text-primary border border-white/10 flex items-center justify-center text-white/70 transition-all">
+              <a href="https://twitter.com/intent/tweet?text=Check%20out%20VisioCine!%20The%20best%20movie%20booking%20platform." target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 hover:bg-primary/20 hover:text-primary border border-white/10 flex items-center justify-center text-white/70 transition-all" title="Share on Twitter">
                 <span className="material-symbols-outlined text-[20px]">share</span>
-              </button>
-              <button className="w-10 h-10 rounded-full bg-white/5 hover:bg-primary/20 hover:text-primary border border-white/10 flex items-center justify-center text-white/70 transition-all">
+              </a>
+              <a href="https://github.com/tripathianiket05/VisioCine" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 hover:bg-primary/20 hover:text-primary border border-white/10 flex items-center justify-center text-white/70 transition-all" title="Star on GitHub">
                 <span className="material-symbols-outlined text-[20px]">thumb_up</span>
-              </button>
+              </a>
             </div>
           </div>
         </div>
