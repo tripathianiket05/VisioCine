@@ -132,9 +132,8 @@ export default function Header() {
 
   return (
     <>
-      <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-black/70 backdrop-blur-2xl border-b border-white/10 shadow-2xl py-3' : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent py-5'}`}>
-        <div className="flex justify-between items-center px-6 md:px-12 max-w-[1600px] mx-auto">
-          
+      <header className={`fixed w-full z-50 transition-all duration-500 flex justify-center pointer-events-none ${scrolled ? 'top-4 px-4' : 'top-0'}`}>
+        <div className={`pointer-events-auto transition-all duration-500 flex justify-between items-center mx-auto ${scrolled ? 'w-full max-w-[1200px] rounded-full bg-black/70 backdrop-blur-2xl border border-white/10 shadow-2xl py-3 px-6 md:px-8' : 'w-full max-w-[1600px] bg-gradient-to-b from-black/80 via-black/40 to-transparent py-5 px-6 md:px-12'}`}>
           <div className="flex items-center gap-10">
             <Link to="/" className="flex items-center gap-3 group">
               <img 
