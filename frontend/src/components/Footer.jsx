@@ -1,6 +1,20 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function Footer() {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = () => {
+    if (email) {
+      setSubscribed(true);
+      setTimeout(() => {
+        setSubscribed(false);
+        setEmail('');
+      }, 3000);
+    }
+  };
+
   return (
     <footer className="bg-black/90 border-t border-white/10 pt-16 pb-8 hidden md:block relative overflow-hidden mt-12">
       {/* Decorative gradient blur */}
@@ -21,16 +35,22 @@ export default function Footer() {
             </p>
             
             {/* Newsletter */}
-            <div className="flex gap-2">
-              <input 
-                type="email" 
-                placeholder="Subscribe to our newsletter..." 
-                className="bg-white/5 border border-white/10 rounded-full px-5 py-3 text-white focus:outline-none focus:border-primary transition-colors w-full max-w-sm placeholder-white/30 text-sm"
-              />
-              <button className="bg-primary hover:bg-rose-600 text-white font-label-md px-6 py-3 rounded-full transition-colors flex items-center gap-2">
-                <span>Join</span>
-                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-              </button>
+            <div className="flex flex-col gap-2 relative">
+              <div className="flex gap-2">
+                <input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Subscribe to our newsletter..." 
+                  className="bg-white/5 border border-white/10 rounded-full px-5 py-3 text-white focus:outline-none focus:border-primary transition-colors w-full max-w-sm placeholder-white/30 text-sm"
+                />
+                <button onClick={handleSubscribe} className="bg-primary hover:bg-rose-600 text-white font-label-md px-6 py-3 rounded-full transition-colors flex items-center gap-2">
+                  <span>{subscribed ? 'Joined!' : 'Join'}</span>
+                  {!subscribed && <span className="material-symbols-outlined text-[18px]">arrow_forward</span>}
+                  {subscribed && <span className="material-symbols-outlined text-[18px]">check</span>}
+                </button>
+              </div>
+              {subscribed && <span className="text-green-400 font-label-md text-sm absolute -bottom-6 left-2 animate-fade-in">Thanks for subscribing!</span>}
             </div>
           </div>
           
@@ -66,9 +86,9 @@ export default function Footer() {
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-white/40 text-xs font-label-md">
           <p>&copy; {new Date().getFullYear()} Cineplex Entertainment. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link to="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="#" className="hover:text-white transition-colors">Terms of Service</Link>
-            <Link to="#" className="hover:text-white transition-colors">Cookie Preferences</Link>
+            <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link to="/cookies" className="hover:text-white transition-colors">Cookie Preferences</Link>
           </div>
         </div>
       </div>

@@ -13,6 +13,11 @@ import Profile from './pages/Profile';
 import ScrollToTop from './components/ScrollToTop';
 import { initAuth } from './apiClient';
 
+import FAQ from './pages/FAQ';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import Cookies from './pages/Cookies';
+
 function App() {
   useEffect(() => {
     initAuth();
@@ -32,6 +37,10 @@ function App() {
         <Route path="/movie/:id/showtimes" element={<Showtimes />} />
         <Route path="/checkout/:showtimeId" element={<Checkout />} />
         <Route path="/ticket/:bookingId" element={<TicketConfirmation />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/cookies" element={<Cookies />} />
       </Routes>
     </Router>
   );
