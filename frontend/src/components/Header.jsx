@@ -138,12 +138,12 @@ export default function Header() {
           <div className="flex items-center gap-10">
             <Link to="/" className="flex items-center gap-3 group">
               <img 
-                src="/logo.png" 
-                alt="VCine Logo" 
+                src="/logo.svg" 
+                alt="VisioCine Logo" 
                 className="h-12 w-auto object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-300"
               />
               <span className="font-display text-2xl md:text-3xl text-white tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
-                VCINE
+                VISIOCINE
               </span>
             </Link>
 

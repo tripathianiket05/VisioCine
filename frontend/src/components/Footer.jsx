@@ -11,9 +11,9 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-3 mb-6">
-              <img src="/logo.png" alt="VCine Logo" className="h-12 w-auto object-contain" />
+              <img src="/logo.svg" alt="VisioCine Logo" className="h-12 w-auto object-contain" />
               <span className="font-display text-3xl text-white uppercase tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
-                VCINE
+                VISIOCINE
               </span>
             </div>
             <p className="text-white/60 font-body-md max-w-md leading-relaxed mb-8">
