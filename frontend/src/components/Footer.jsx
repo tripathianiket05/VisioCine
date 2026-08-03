@@ -38,10 +38,9 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-label-md uppercase tracking-wider mb-6">Explore</h4>
             <div className="flex flex-col gap-4 text-white/50 font-body-md">
-              <Link to="/" className="hover:text-primary transition-colors">Movies</Link>
+              <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">Movies</Link>
               <Link to="/cinemas" className="hover:text-primary transition-colors">Cinemas</Link>
               <Link to="/offers" className="hover:text-primary transition-colors">Offers</Link>
-              <Link to="#" className="hover:text-primary transition-colors">Gift Cards</Link>
             </div>
           </div>
 
